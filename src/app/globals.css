@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  background-color: black;
+  padding: 60px;
+  font-family: Poppins;
+}
+
+.imageChoose{
+  margin-top: 20px;
+}
+
+.title{
+  margin-bottom: 5px;
+}
+
+.select{
+  padding: 5px;
+}
+
+.boxWrapper {
+  width: 100%;
+}
+
+.box {
+  background-color: #00006c;
+  margin-top: 20px;
+  padding: 6px 10px;
+  border-radius: 7px;
+}
+
+.generatedImage{
+  margin-top: 10px;
+}
+
+.result{
+  margin-top: 8px;
+}
