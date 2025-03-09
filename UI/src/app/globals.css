@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 
 * {
   box-sizing: border-box;
@@ -7,7 +7,7 @@
 }
 
 .main {
-  background-color: black;
+  background-color: #68686800;
   padding: 60px;
   font-family: Poppins;
 }
@@ -41,4 +41,4 @@
 
 .result{
   margin-top: 8px;
-}
+} */
