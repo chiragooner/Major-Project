@@ -1,6 +1,5 @@
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
-import Sidebar from "./components/sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,9 +26,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable}antialiased flex overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable}antialiased flex layoutStructure overflow-hidden`}
       >
-        <Sidebar />
         {children}
       </body>
     </html>
