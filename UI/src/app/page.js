@@ -50,7 +50,6 @@
 //         </select>
 //       </div>
 
-
 //       <div className="imageChoose mt-4">
 //         <label
 //           htmlFor="HeadlineAct"
@@ -118,7 +117,6 @@
 //   );
 // }
 
-
 //1 - Parkinson
 //0 - Healthy
 
@@ -141,14 +139,14 @@
 //       setPreviewImage(URL.createObjectURL(file));
 //       setPrediction(null);
 //       setError(null);
-      
+
 //       // Log the file being appended to FormData for debugging
 //       const formData = new FormData();
 //       formData.append("file", file);
 //       console.log("Appended FormData:", formData);
 //     }
 //   };
-  
+
 //   const handlePredict = async () => {
 //     if (!selectedImage) {
 //       alert("Please select an image first!");
@@ -171,8 +169,7 @@
 //         method: "POST",
 //         body: formData,
 //       });
-      
-      
+
 //       const data = await response.json();
 //       console.log(data);
 //       setLoading(false);
@@ -185,8 +182,6 @@
 //       setError(`Connection error: ${error.message}`);
 //     }
 // };
-
-
 
 //   return (
 //     <div className="mt-11 w-full text-white flex flex-col items-center">
@@ -237,9 +232,6 @@
 //   );
 // }
 
-
-
-
 "use client";
 
 import { useState } from "react";
@@ -252,8 +244,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedModel, setSelectedModel] = useState("vgg19");
-  const [confidenceScore, setConfidenceScore] = useState(null);
-  const [probabilities, setProbabilities] = useState(null);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -261,21 +251,18 @@ export default function Home() {
       setSelectedImage(file);
       setPreviewImage(URL.createObjectURL(file));
       setPrediction(null);
-      setConfidenceScore(null);
-      setProbabilities(null);
       setError(null);
     }
   };
-  
+
   const handleModelChange = (event) => {
     setSelectedModel(event.target.value);
     // Reset prediction when model changes
     setPrediction(null);
-    setConfidenceScore(null);
-    setProbabilities(null);
   };
-  
+
   const handlePredict = async () => {
+    console.log(`Selected model: ${selectedModel}`);
     if (!selectedImage) {
       alert("Please select an image first!");
       return;
@@ -288,29 +275,22 @@ export default function Home() {
 
     try {
       console.log(`Sending image to backend using ${selectedModel} model...`);
-      const response = await fetch(`http://127.0.0.1:8000/predict/${selectedModel}`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `http://127.0.0.1:8000/predict/${selectedModel}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
-      
       if (!response.ok) {
         throw new Error(`Server responded with status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       console.log("Response data:", data);
       setLoading(false);
       setPrediction(data.prediction);
-      
-      // Set confidence score and probabilities if available
-      if (data.confidence) {
-        setConfidenceScore(data.confidence);
-      }
-      
-      if (data.probabilities) {
-        setProbabilities(data.probabilities);
-      }
     } catch (error) {
       console.error("Error:", error);
       setLoading(false);
@@ -325,7 +305,9 @@ export default function Home() {
       <div className="mt-8 flex flex-col items-center w-full max-w-md">
         <div className="w-full bg-gray-800 p-6 rounded-lg shadow-lg">
           <div className="mb-4">
-            <label className="block text-md font-medium mb-2">Select Model</label>
+            <label className="block text-md font-medium mb-2">
+              Select Model
+            </label>
             <select
               value={selectedModel}
               onChange={handleModelChange}
@@ -335,9 +317,11 @@ export default function Home() {
               <option value="vgg16">VGG16 (Spiral No Aug)</option>
             </select>
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-md font-medium mb-2">Upload Image</label>
+            <label className="block text-md font-medium mb-2">
+              Upload Image
+            </label>
             <input
               type="file"
               accept="image/*"
@@ -345,7 +329,7 @@ export default function Home() {
               className="w-full bg-gray-700 px-4 py-2 rounded-md text-white"
             />
           </div>
-          
+
           <button
             onClick={handlePredict}
             className="w-full mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition duration-200 disabled:bg-gray-500 disabled:cursor-not-allowed"
@@ -379,29 +363,21 @@ export default function Home() {
         {prediction !== null && (
           <div className="mt-6 w-full bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-xl font-bold mb-4 text-center">Results</h2>
-            
+
             <div className="mb-4 p-4 bg-gray-700 rounded-lg">
-              <p className="text-lg mb-1">Model: <span className="font-semibold">{selectedModel.toUpperCase()}</span></p>
-              <p className="text-lg mb-1">Prediction: <span className="font-semibold text-2xl">{prediction}</span></p>
-              
-              {confidenceScore !== null && (
-                <p className="text-lg">Confidence: <span className="font-semibold">{confidenceScore}%</span></p>
-              )}
+              <p className="text-lg mb-1">
+                Model:{" "}
+                <span className="font-semibold">
+                  {selectedModel.toUpperCase()}
+                </span>
+              </p>
+              <p className="text-lg mb-1">
+                Prediction:{" "}
+                <span className="font-semibold text-2xl">
+                  {prediction === 0 ? "Healthy" : "Parkinson's Disease"}
+                </span>
+              </p>
             </div>
-            
-            {probabilities && (
-              <div className="mt-4">
-                <p className="font-medium mb-2">Class Probabilities:</p>
-                <div className="grid grid-cols-1 gap-2">
-                  {Object.entries(probabilities).map(([className, probability]) => (
-                    <div key={className} className="flex justify-between p-2 bg-gray-700 rounded">
-                      <span>{className}</span>
-                      <span className="font-medium">{probability}%</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
